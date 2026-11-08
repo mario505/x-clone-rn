@@ -10,7 +10,6 @@ import commentRoutes from "./routes/comment.route.js";
 import notificationRoutes from "./routes/notification.route.js";
 import { arcjetMiddleware } from "./middleware/arcjet.middleware.js";
 
-
 const app = express();
 
 app.use(cors());
@@ -34,9 +33,13 @@ app.use((err, req, res, next) => {
 const startServer = async () => {
   try {
     await connectDB();
-    app.listen(ENV.PORT, () =>
-      console.log("Server is up and running on port: ", ENV.PORT),
-    );
+
+    // listen for local development
+    if (ENV.NODE_ENV !== "production") {
+      app.listen(ENV.PORT, () =>
+        console.log("Server is up and running on port: ", ENV.PORT),
+      );
+    }
   } catch (error) {
     console.error("Failed to start server", error.message);
     process.exit(1);
@@ -44,3 +47,6 @@ const startServer = async () => {
 };
 
 startServer();
+
+// export for Vercel
+export default app;
